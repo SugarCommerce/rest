@@ -1,0 +1,96 @@
+{
+  "name": "sugarcommerce/rest",
+  "description": "A plugin's REST API and who may use it: controllers, allow-listed shapes, list parameters, ETags, stable error codes, rate limits, idempotency keys, a changes feed, search and an OpenAPI document, with the plugin's own capabilities and its abilities for AI assistants.",
+  "type": "library",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://github.com/sugarcommerce/rest",
+  "authors": [
+    {
+      "name": "David Sherlock",
+      "homepage": "https://arraypress.com/"
+    }
+  ],
+  "keywords": [
+    "wordpress",
+    "rest-api",
+    "openapi",
+    "etag",
+    "idempotency",
+    "rate-limit",
+    "sync",
+    "cors",
+    "capabilities",
+    "abilities-api",
+    "mcp"
+  ],
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../data",
+      "options": {
+        "symlink": false
+      }
+    },
+    {
+      "type": "path",
+      "url": "../dates",
+      "options": {
+        "symlink": false
+      }
+    },
+    {
+      "type": "path",
+      "url": "../security",
+      "options": {
+        "symlink": false
+      }
+    }
+  ],
+  "require": {
+    "php": ">=8.3",
+    "sugarcommerce/data": "dev-main",
+    "sugarcommerce/dates": "dev-main",
+    "sugarcommerce/security": "dev-main"
+  },
+  "require-dev": {
+    "phpcompatibility/phpcompatibility-wp": "^2.1",
+    "phpunit/phpunit": "^12.5",
+    "squizlabs/php_codesniffer": "^3.13.5",
+    "wp-coding-standards/wpcs": "^3.4",
+    "wp-phpunit/wp-phpunit": "^7.1",
+    "yoast/phpunit-polyfills": "^4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "SugarCommerce\\Rest\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "SugarCommerce\\Rest\\Tests\\": "tests/"
+    },
+    "exclude-from-classmap": [
+      "/tests/bootstrap.php",
+      "/tests/wp-tests-config.php"
+    ]
+  },
+  "config": {
+    "optimize-autoloader": true,
+    "sort-packages": true,
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "scripts": {
+    "test": "phpunit",
+    "lint": "phpcs",
+    "format": "phpcbf --standard=phpcs-format.xml.dist",
+    "format:check": "phpcs --standard=phpcs-format.xml.dist"
+  },
+  "support": {
+    "issues": "https://github.com/sugarcommerce/rest/issues",
+    "source": "https://github.com/sugarcommerce/rest"
+  }
+}

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/12.0/phpunit.xsd"
+         bootstrap="tests/bootstrap.php"
+         colors="true"
+         failOnWarning="true"
+         failOnNotice="true"
+         beStrictAboutOutputDuringTests="true">
+    <testsuites>
+        <testsuite name="SugarCommerce REST">
+            <directory>tests</directory>
+            <exclude>tests/fixtures</exclude>
+        </testsuite>
+    </testsuites>
+    <source>
+        <include>
+            <directory>src</directory>
+        </include>
+    </source>
+    <php>
+        <!-- Without this the WordPress test bootstrap never finds the config
+             and dies asking for constants that are already in it. -->
+        <const name="WP_TESTS_CONFIG_FILE_PATH" value="tests/wp-tests-config.php"/>
+    </php>
+</phpunit>
