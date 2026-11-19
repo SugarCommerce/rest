@@ -406,4 +406,91 @@ final class CapabilitiesTest extends TestCase {
 
 		Capabilities::register( '' );
 	}
+
+	public function test_an_addon_adds_a_capability_with_its_areas(): void {
+		$set = $this->shop();
+
+		// Before: an add-on's area is written with the narrowest there is.
+		$this->assertSame( 'shop_manage_settings', $set->capability( 'write', 'affiliates' ) );
+
+		$this->assertSame(
+			$set,
+			$set->add(
+				'shop_manage_affiliates',
+				'Run the affiliate programme',
+				[
+					'read'  => [ 'affiliates' ],
+					'write' => [ 'affiliates', 'payouts' ],
+				]
+			)
+		);
+
+		$this->assertSame( 'shop_manage_affiliates', $set->capability( 'write', 'affiliates' ) );
+		$this->assertSame( 'shop_manage_affiliates', $set->capability( 'write', 'payouts' ) );
+		$this->assertSame( 'shop_manage_affiliates', $set->capability( 'read', 'affiliates' ) );
+		$this->assertTrue( $set->has( 'shop_manage_affiliates' ) );
+		$this->assertSame( 'Run the affiliate programme', $set->labels()['shop_manage_affiliates'] );
+		$this->assertContains( 'shop_manage_affiliates', $set->all() );
+
+		// Granted to an administrator as it is asked, and to nobody else.
+		$this->assertTrue( current_user_can( 'shop_manage_affiliates' ) );
+		$this->assertTrue( $set->can( 'write', 'affiliates' ) );
+
+		$this->sign_in( $this->subscriber );
+
+		$this->assertFalse( current_user_can( 'shop_manage_affiliates' ) );
+		$this->assertFalse( $set->can( 'write', 'affiliates' ) );
+
+		// A role given only the add-on's capability runs the add-on's area
+		// and nothing of the shop's.
+		add_role(
+			'shop_viewer',
+			'Affiliate manager',
+			[
+				'read'                   => true,
+				'shop_manage_affiliates' => true,
+			]
+		);
+
+		$this->sign_in( self::factory()->user->create( [ 'role' => 'shop_viewer' ] ) );
+
+		$this->assertTrue( $set->can( 'write', 'affiliates' ) );
+		$this->assertFalse( $set->can( 'write', 'orders' ) );
+		$this->assertFalse( $set->can( 'write', 'settings' ) );
+	}
+
+	public function test_an_added_capability_never_takes_an_area_already_mapped(): void {
+		$set = $this->shop();
+
+		$set->add( 'shop_loose', '', [ 'write' => [ 'orders' ] ] );
+
+		$this->assertSame( 'shop_manage_orders', $set->capability( 'write', 'orders' ) );
+	}
+
+	public function test_adding_again_keeps_the_label_and_adds_areas(): void {
+		$set = $this->shop();
+
+		$set->add( 'shop_manage_affiliates', 'Affiliates', [ 'write' => [ 'affiliates' ] ] );
+		$set->add( 'shop_manage_affiliates', '', [ 'write' => [ 'payouts' ] ] );
+
+		$this->assertSame( 'Affiliates', $set->labels()['shop_manage_affiliates'] );
+		$this->assertSame( 'shop_manage_affiliates', $set->capability( 'write', 'payouts' ) );
+	}
+
+	public function test_a_new_kind_has_no_default_of_its_own(): void {
+		$set = $this->shop();
+
+		$set->add( 'shop_approve_payouts', '', [ 'approve' => [ 'payouts' ] ] );
+
+		$this->assertSame( 'shop_approve_payouts', $set->capability( 'approve', 'payouts' ) );
+		$this->assertSame( 'manage_options', $set->capability( 'approve', 'reviews' ) );
+	}
+
+	public function test_an_added_capability_needs_a_name_of_its_own(): void {
+		$set = $this->shop();
+
+		$this->expectException( InvalidArgumentException::class );
+
+		$set->add( 'manage_options' );
+	}
 }

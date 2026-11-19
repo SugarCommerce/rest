@@ -230,6 +230,62 @@ final class Capabilities {
 	}
 
 	/**
+	 * Add a capability to the set, and the areas that take it.
+	 *
+	 * For an add-on with an area of its own, so that somebody can be let
+	 * run it without being let near the settings:
+	 *
+	 *     Capabilities::get( 'myshop' )->add(
+	 *         'myshop_manage_affiliates',
+	 *         'Run the affiliate programme',
+	 *         [ 'read' => [ 'affiliates' ], 'write' => [ 'affiliates', 'payouts' ] ]
+	 *     );
+	 *
+	 * Granted to whoever has the parent, as every other one is. An area
+	 * that already takes a capability keeps it: an add-on cannot loosen
+	 * what the plugin's own areas ask for. A kind the set does not have is
+	 * added, with no default of its own -- its other areas take the
+	 * parent. Adding the same capability again adds its new areas and keeps
+	 * its label unless given one.
+	 *
+	 * @param string                       $capability The capability.
+	 * @param string                       $label      What it is for.
+	 * @param array<string, array<string>> $areas      kind => the areas that take it.
+	 *
+	 * @return self
+	 * @throws InvalidArgumentException When the capability is empty or is the parent.
+	 * @since 1.0.0
+	 */
+	public function add( string $capability, string $label = '', array $areas = [] ): self {
+		if ( '' === $capability || $capability === $this->parent ) {
+			throw new InvalidArgumentException( 'A capability added to a set needs a name of its own.' );
+		}
+
+		if ( '' !== $label || ! isset( $this->capabilities[ $capability ] ) ) {
+			$this->capabilities[ $capability ] = $label;
+		}
+
+		foreach ( $areas as $kind => $names ) {
+			$kind = (string) $kind;
+
+			$this->kinds[ $kind ] ??= [
+				'default' => '',
+				'areas'   => [],
+			];
+
+			foreach ( (array) $names as $area ) {
+				$area = (string) $area;
+
+				if ( '' !== $area && ! isset( $this->kinds[ $kind ]['areas'][ $area ] ) ) {
+					$this->kinds[ $kind ]['areas'][ $area ] = $capability;
+				}
+			}
+		}
+
+		return $this;
+	}
+
+	/**
 	 * The set's id.
 	 *
 	 * @return string

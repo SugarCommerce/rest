@@ -202,7 +202,17 @@ $caps->can( 'refund', 'orders' );               // the current user
 $caps->user_can( $user_id, 'write', 'orders' ); // somebody else
 $caps->all();                                   // every one of them, for a role editor
 $caps->granted();                               // the ones the current user has
+
+// An add-on's own capability, and the areas that take it.
+$caps->add( 'myshop_manage_affiliates', 'Run the affiliate programme', [
+	'read'  => [ 'affiliates' ],
+	'write' => [ 'affiliates', 'payouts' ],
+] );
 ```
+
+`add()` grants the new capability to the parent's holders like the rest. An
+area already mapped keeps its capability, so an add-on cannot loosen what the
+plugin's own areas ask for.
 
 Anyone with the parent capability (`manage_options`, or `'parent' => …`;
 `false` for nobody) has every one, worked out as the question is asked and
