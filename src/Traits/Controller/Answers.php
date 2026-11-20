@@ -15,6 +15,7 @@ namespace SugarCommerce\Rest\Traits\Controller;
 use SugarCommerce\Dates\Timestamp;
 use SugarCommerce\Rest\Conditional;
 use SugarCommerce\Rest\Record;
+use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
 

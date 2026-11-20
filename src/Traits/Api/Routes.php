@@ -12,6 +12,7 @@ declare( strict_types=1 );
 
 namespace SugarCommerce\Rest\Traits\Api;
 
+use SugarCommerce\Rest\Api;
 use SugarCommerce\Rest\Controllers\Document;
 use SugarCommerce\Rest\Controllers\Search;
 use SugarCommerce\Rest\Controllers\Sync;
