@@ -12,8 +12,8 @@ declare( strict_types=1 );
 
 namespace SugarCommerce\Rest\Idempotency\Stores;
 
-use SugarCommerce\Rest\Idempotency\Entry;
 use SugarCommerce\Rest\Idempotency\Store;
+use SugarCommerce\Rest\Models\Idempotency\Entry;
 
 /**
  * Keys for the length of one PHP process.

@@ -12,7 +12,7 @@ declare( strict_types=1 );
 
 namespace SugarCommerce\Rest;
 
-use SugarCommerce\Security\RateLimit\Decision;
+use SugarCommerce\Security\Models\RateLimit\Decision;
 use SugarCommerce\Security\RateLimit\Limiter;
 use WP_Error;
 

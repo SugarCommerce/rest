@@ -10,11 +10,11 @@ declare( strict_types=1 );
 namespace SugarCommerce\Rest\Tests;
 
 use SugarCommerce\Rest\Idempotency;
-use SugarCommerce\Rest\Idempotency\Entry;
 use SugarCommerce\Rest\Idempotency\Store;
 use SugarCommerce\Rest\Idempotency\Stores\Memory;
 use SugarCommerce\Rest\Idempotency\Stores\Query;
 use SugarCommerce\Rest\Idempotency\Stores\Table;
+use SugarCommerce\Rest\Models\Idempotency\Entry;
 use SugarCommerce\Rest\Tests\Support\Keys\Query as Keys;
 use SugarCommerce\Rest\Tests\Support\TestCase;
 use SugarCommerce\Rest\Tests\Support\Widgets;

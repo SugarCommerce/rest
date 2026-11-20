@@ -13,8 +13,8 @@ declare( strict_types=1 );
 namespace SugarCommerce\Rest;
 
 use SugarCommerce\Dates\Clock;
-use SugarCommerce\Rest\Idempotency\Entry;
 use SugarCommerce\Rest\Idempotency\Store;
+use SugarCommerce\Rest\Models\Idempotency\Entry;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;

@@ -401,6 +401,8 @@ All named from the prefix or id: `{prefix}_rest_init`, `{prefix}_rest_request`,
 * `src/Permissions.php`, `RateLimit.php`, `Idempotency.php` (and
   `src/Idempotency/`), `Changes.php`, `Conditional.php`, `Cors.php`,
   `OpenApi.php`: the parts.
+* `src/Models/`: data shapes and nothing that does work. `Idempotency/Entry.php`
+  is what is kept against an idempotency key: who sent it, the request, the answer.
 
 ## Requirements
 

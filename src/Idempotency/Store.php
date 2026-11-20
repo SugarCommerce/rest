@@ -12,6 +12,8 @@ declare( strict_types=1 );
 
 namespace SugarCommerce\Rest\Idempotency;
 
+use SugarCommerce\Rest\Models\Idempotency\Entry;
+
 /**
  * Keeps idempotency keys.
  *

@@ -10,7 +10,7 @@
 
 declare( strict_types=1 );
 
-namespace SugarCommerce\Rest\Idempotency;
+namespace SugarCommerce\Rest\Models\Idempotency;
 
 use SugarCommerce\Dates\Clock;
 use SugarCommerce\Dates\Timestamp;

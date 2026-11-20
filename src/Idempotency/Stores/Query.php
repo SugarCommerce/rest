@@ -14,8 +14,8 @@ namespace SugarCommerce\Rest\Idempotency\Stores;
 
 use SugarCommerce\Data\Query as Rows;
 use SugarCommerce\Dates\Timestamp;
-use SugarCommerce\Rest\Idempotency\Entry;
 use SugarCommerce\Rest\Idempotency\Store;
+use SugarCommerce\Rest\Models\Idempotency\Entry;
 use UnexpectedValueException;
 
 /**
