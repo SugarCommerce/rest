@@ -43,6 +43,7 @@ final class Document extends Controller {
 	/**
 	 * {@inheritDoc}
 	 */
+	#[\Override]
 	public function register_routes(): void {
 		$type       = $this->kit()->object_type( 'openapi' );
 		$properties = [ 'openapi' => Schema::string( __( 'The OpenAPI version: the rest of the document is as that specification lays out.', 'sugarcommerce' ) ) ];

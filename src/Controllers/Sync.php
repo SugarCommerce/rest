@@ -44,7 +44,7 @@ final class Sync extends Controller {
 	 *
 	 * @since 1.0.0
 	 */
-	public const MOST = 500;
+	public const int MOST = 500;
 
 	/**
 	 * The route, for an API.
@@ -60,6 +60,7 @@ final class Sync extends Controller {
 	/**
 	 * {@inheritDoc}
 	 */
+	#[\Override]
 	public function register_routes(): void {
 		$kinds = array_keys( $this->kit()->resources( 'changes' ) );
 		$type  = $this->kit()->object_type( 'changes' );
@@ -170,7 +171,10 @@ final class Sync extends Controller {
 		$changed   = [];
 		$truncated = [];
 
-		foreach ( $this->kit()->resources( 'changes' ) as $resource => $args ) {
+		$readable  = $this->kit()->readable( 'changes', $request );
+		$types     = array_values( array_intersect( $types, array_keys( $readable ) ) );
+
+		foreach ( $readable as $resource => $args ) {
 			if ( ! in_array( $resource, $types, true ) ) {
 				continue;
 			}

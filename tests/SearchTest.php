@@ -17,6 +17,25 @@ use SugarCommerce\Rest\Tests\Support\Widgets;
 final class SearchTest extends TestCase {
 
 	/**
+	 * A kind the user may not read is not searched, though the route's
+	 * own area lets them in: each kind is asked about its own area, its
+	 * name unless it says otherwise.
+	 *
+	 * @return void
+	 */
+	public function test_a_kind_the_user_may_not_read_is_not_searched(): void {
+		$this->search_api( [ 'can' => static fn( string $kind, string $area ): bool => 'keys' !== $area ] );
+		$this->sign_in();
+
+		Widgets::add( [ 'name' => 'blue' ] );
+
+		$data = $this->request( 'GET', '/acme/v1/search', [ 'q' => 'KEY-1' ] )->get_data();
+
+		$this->assertArrayHasKey( 'widgets', $data );
+		$this->assertArrayNotHasKey( 'keys', $data, 'The licence keys are behind an area this user cannot read.' );
+	}
+
+	/**
 	 * The fixture API, with widgets searchable and keys found only exactly.
 	 *
 	 * @param array<string, mixed> $config What to change.

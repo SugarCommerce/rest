@@ -327,7 +327,9 @@ more), the ids deleted (the last 500 deletions, from each resource's `deleted`
 action, with `complete` false when that does not reach back far enough), and a
 `cursor` to send next time. Every resource given `search` is in
 `GET /search?q=…`: its `find` first, for the exact match, then its `list`'s
-own search. An add-on's records join both with one call as the plugin loads,
+own search. Both answer only for the kinds the user may read: each kind is
+asked about under its own `area` (its name unless it gives one), on top of the
+route's check of the API's area. An add-on's records join both with one call as the plugin loads,
 `Api::get( 'myshop' )->add_resource( 'reviews', [ … ] )`, and its controller
 is handed over on `{prefix}_rest_init` with `$api->add( $controller )`.
 
@@ -369,43 +371,36 @@ All named from the prefix or id: `{prefix}_rest_init`, `{prefix}_rest_request`,
 `{prefix}_rest_rate_counter`, `{id}_can_{kind}`, `{id}_abilities`,
 `{id}_ability_capability`.
 
-## Moving from arraypress/wp-*
+## Security
 
-From `arraypress/wp-rest-kit`, `arraypress/wp-register-capabilities` and
-`arraypress/wp-register-abilities`. Stored keys, tables, option names, codes,
-headers and hook names are unchanged, so in-flight idempotency keys, rate
-counters and the deletions memory carry on.
+* Every route checks a signed-in user and a capability before it runs, and
+  a refund or anything else that moves money has its own, tighter rate limit
+  per application password.
+* `/changes` and `/search` check each kind of record under its own area, so
+  a user allowed one kind cannot read another's ids or rows through them.
+* A retried POST cannot run twice: idempotency keys are per user, the
+  request's fingerprint is compared in constant time, and a key reused for a
+  different request is refused.
+* Errors from a plugin's functions pass on their message and code, never
+  their data, so nothing internal leaks into an answer.
+* CORS echoes an origin only when it is on the list, exactly (scheme, host,
+  port); never `*`, never with credentials.
+* The request log, when on, is one line a request without the body.
 
-| Old | New |
-|---|---|
-| `ArrayPress\RestKit\*` | `SugarCommerce\Rest\*` — `Api`, `Controller`, `Record`, `Schema`, `Errors`, `Permissions`, `RateLimit`, `Idempotency`, `Idempotency\*`, `Changes`, `OpenApi`, `Conditional`, `Cors`, `Concerns\Lists`, `Controllers\*`: same methods |
-| `ArrayPress\RestKit\Dates::parse()` / `timestamp()` / `iso()` / `sql()` | `SugarCommerce\Dates\Timestamp::parse()` / `to_unix()` / `$api->date()` / `at()` |
-| `time()` in the idempotency keys, deletions and `/changes` | `SugarCommerce\Dates\Clock::time()`: `Clock::freeze()` stops them |
-| `Stores\Query( query: … )` over any BerlinDB query | the query must be a `SugarCommerce\Data\Query`; the insert is its `claim()`, and `clean()` is its `sweep()`, at most `batch` (1000) a run |
-| `ArrayPress\RateLimit\Limiter` in `{prefix}_rest_rate_counter` | `SugarCommerce\Security\RateLimit\Limiter` |
-| `ArrayPress\RegisterCapabilities\Capabilities` | `SugarCommerce\Rest\Capabilities` — same methods and filter |
-| `register_capabilities( $id, $config )` | `Capabilities::register( $id, $config )` |
-| `get_registered_capability( $id, $kind, $area )` | `Capabilities::get( $id )?->capability( $kind, $area ) ?? 'manage_options'` |
-| `current_user_can_registered( $id, $kind, $area, $context )` | `(bool) Capabilities::get( $id )?->can( $kind, $area, $context )` |
-| `ArrayPress\RegisterAbilities\Abilities` | `SugarCommerce\Rest\Abilities` — same methods and hooks |
-| `register_abilities( $id, $config )` | `Abilities::register( $id, $config )` |
-| Abilities `'capabilities' => Capabilities::get( 'myshop' )` | that, or the set's id: `'capabilities' => 'myshop'`; the set's `{id}_can_{kind}` filter now applies to its abilities too |
-| an ability or category with no `description` (WordPress refused it) | registered, described by its label |
-| text domain `arraypress` | `sugarcommerce` |
-| `arraypress/wp-rest-kit`, `wp-register-capabilities`, `wp-register-abilities`, `wp-rate-limit` in composer | `sugarcommerce/rest` |
+## Layout
 
-The global functions are gone: a plugin bundled with Strauss could not share
-them with another copy. New: `Cors::only()` and `Cors::origin()` (an exact
-origin list, from the retired SugarCommerce `http` package), and `first` and
-`last` in a list's `Link` header (from its `paginate`), with `Link` added to
-the headers a CORS caller may read.
-
-Not brought over from the retired SugarCommerce packages, because WordPress
-already does it: `http`'s router, request and response (WP_REST_Server),
-cookies and CSP pages; `http-client` (`wp_safe_remote_*`, and SSRF checks
-belong with whatever fetches); `paginate`'s SQL paginator (BerlinDB and
-`get_collection_params()`); `mcp-server` (the Abilities API and the MCP
-Adapter plugin); and `oauth-server` (application passwords).
+* `src/Api.php` registers an API and makes its parts; `src/Traits/Api/` holds
+  its names, what the site says, its routes and what every response gets.
+* `src/Controller.php` is the base controller; `src/Traits/Controller/` holds
+  its list parameters, its answers and its refusals. `src/Controllers/` are
+  the kit's own routes (`/changes`, `/search`, `/openapi.json`).
+* `src/Record.php`, `Schema.php`, `Errors.php`: record shapes, JSON Schema
+  helpers, the seven error codes.
+* `src/Capabilities.php` and `src/Abilities.php` (with `src/Traits/Abilities/`):
+  who may do what, and the abilities for AI assistants.
+* `src/Permissions.php`, `RateLimit.php`, `Idempotency.php` (and
+  `src/Idempotency/`), `Changes.php`, `Conditional.php`, `Cors.php`,
+  `OpenApi.php`: the parts.
 
 ## Requirements
 

@@ -47,7 +47,7 @@ final class RateLimit {
 	 *
 	 * @since 1.0.0
 	 */
-	public const GENERAL = 'general';
+	public const string GENERAL = 'general';
 
 	/**
 	 * The configuration, filled in.

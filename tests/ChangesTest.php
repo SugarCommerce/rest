@@ -237,7 +237,47 @@ final class ChangesTest extends TestCase {
 
 		$this->request( 'GET', '/acme/v1/changes', [ 'since' => '2026-01-01T00:00:00Z' ] );
 
-		$this->assertSame( [ 'widgets' ], $asked );
+		$this->assertSame( [ 'widgets', 'widgets', 'gadgets' ], $asked, 'The route asks about the API\'s area, then each kind about its own.' );
+	}
+
+	/**
+	 * A kind the user may not read is left out of the answer, changes and
+	 * deletions both: the route's own area does not stand in for every
+	 * kind's.
+	 *
+	 * @return void
+	 */
+	public function test_a_kind_the_user_may_not_read_is_left_out(): void {
+		$this->sync_api(
+			[
+				'can'       => static fn( string $kind, string $area ): bool => 'gadgets' !== $area,
+				'resources' => [
+					'widgets' => [
+						'table'   => 'acme_widgets',
+						'deleted' => 'acme_delete_widget',
+					],
+					'gadgets' => [
+						'table'   => 'acme_gadgets',
+						'deleted' => 'acme_delete_gadget',
+					],
+					'secrets' => [
+						'table' => 'acme_gadgets',
+						'area'  => 'gadgets',
+					],
+				],
+			]
+		);
+		$this->sign_in();
+
+		$w = self::row( 'acme_widgets', '2026-02-01 00:00:00' );
+		self::row( 'acme_gadgets', '2026-02-01 00:00:00' );
+
+		do_action( 'acme_delete_gadget', 9 );
+
+		$data = json_decode( (string) wp_json_encode( $this->request( 'GET', '/acme/v1/changes', [ 'since' => '2026-01-15T00:00:00Z' ] )->get_data() ), true );
+
+		$this->assertSame( [ 'widgets' => [ $w ] ], $data['changed'] );
+		$this->assertSame( [], $data['deleted'] );
 	}
 
 	public function test_there_is_no_changes_route_without_a_table_to_read(): void {

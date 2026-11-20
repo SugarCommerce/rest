@@ -113,6 +113,7 @@ final class Query implements Store {
 	/**
 	 * {@inheritDoc}
 	 */
+	#[\Override]
 	public function find( string $hash ): ?Entry {
 		$row = $this->query()->get_item_by( 'key_hash', $hash );
 
@@ -122,6 +123,7 @@ final class Query implements Store {
 	/**
 	 * {@inheritDoc}
 	 */
+	#[\Override]
 	public function claim( Entry $entry ): int {
 		return (int) ( $this->query()->claim( $entry->to_row(), $this->insert ) ?? 0 );
 	}
@@ -129,6 +131,7 @@ final class Query implements Store {
 	/**
 	 * {@inheritDoc}
 	 */
+	#[\Override]
 	public function complete( int $id, int $status, string $response ): bool {
 		$data = [
 			'response_code' => $status,
@@ -141,6 +144,7 @@ final class Query implements Store {
 	/**
 	 * {@inheritDoc}
 	 */
+	#[\Override]
 	public function release( int $id ): bool {
 		return (bool) ( null === $this->delete ? $this->query()->delete_item( $id ) : ( $this->delete )( $id ) );
 	}
@@ -150,6 +154,7 @@ final class Query implements Store {
 	 *
 	 * A key with no expiry is never swept: `NULL < now` matches nothing.
 	 */
+	#[\Override]
 	public function clean( int $now ): int {
 		return $this->query()->sweep( 'date_expires', Timestamp::at( $now ), limit: $this->batch );
 	}

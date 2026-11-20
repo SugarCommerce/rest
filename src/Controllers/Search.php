@@ -48,6 +48,7 @@ final class Search extends Controller {
 	/**
 	 * {@inheritDoc}
 	 */
+	#[\Override]
 	public function register_routes(): void {
 		$kinds      = $this->kit()->resources( 'search' );
 		$type       = $this->kit()->object_type( 'search' );
@@ -123,7 +124,7 @@ final class Search extends Controller {
 		$types = (array) $request['types'];
 		$out   = [ 'query' => $query ];
 
-		foreach ( $this->kit()->resources( 'search' ) as $kind => $args ) {
+		foreach ( $this->kit()->readable( 'search', $request ) as $kind => $args ) {
 			if ( ! in_array( $kind, $types, true ) ) {
 				continue;
 			}

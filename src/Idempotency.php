@@ -54,7 +54,7 @@ final class Idempotency {
 	 *
 	 * @since 1.0.0
 	 */
-	public const MAX_LENGTH = 255;
+	public const int MAX_LENGTH = 255;
 
 	/**
 	 * What makes the store, until it is made.

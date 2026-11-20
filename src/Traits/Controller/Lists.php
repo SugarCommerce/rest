@@ -2,7 +2,7 @@
 /**
  * What a list takes, and how that becomes a query.
  *
- * @package     SugarCommerce\Rest\Concerns
+ * @package     SugarCommerce\Rest
  * @copyright   Copyright (c) 2026, ArrayPress Limited
  * @license     GPL-2.0-or-later
  * @since       1.0.0
@@ -10,7 +10,7 @@
 
 declare( strict_types=1 );
 
-namespace SugarCommerce\Rest\Concerns;
+namespace SugarCommerce\Rest\Traits\Controller;
 
 use SugarCommerce\Dates\Timestamp;
 use SugarCommerce\Rest\Record;

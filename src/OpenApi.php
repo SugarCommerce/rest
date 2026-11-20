@@ -43,7 +43,7 @@ final class OpenApi {
 	 *
 	 * @since 1.0.0
 	 */
-	private const WORDPRESS_ONLY = [ '$schema', 'context', 'arg_options' ];
+	private const array WORDPRESS_ONLY = [ '$schema', 'context', 'arg_options' ];
 
 	/**
 	 * The document of an API.

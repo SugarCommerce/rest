@@ -43,6 +43,7 @@ final class Memory implements Store {
 	/**
 	 * {@inheritDoc}
 	 */
+	#[\Override]
 	public function find( string $hash ): ?Entry {
 		foreach ( $this->entries as $entry ) {
 			if ( $entry->hash === $hash ) {
@@ -56,6 +57,7 @@ final class Memory implements Store {
 	/**
 	 * {@inheritDoc}
 	 */
+	#[\Override]
 	public function claim( Entry $entry ): int {
 		if ( null !== $this->find( $entry->hash ) ) {
 			return 0;
@@ -71,6 +73,7 @@ final class Memory implements Store {
 	/**
 	 * {@inheritDoc}
 	 */
+	#[\Override]
 	public function complete( int $id, int $status, string $response ): bool {
 		$entry = $this->entries[ $id ] ?? null;
 
@@ -86,6 +89,7 @@ final class Memory implements Store {
 	/**
 	 * {@inheritDoc}
 	 */
+	#[\Override]
 	public function release( int $id ): bool {
 		if ( ! isset( $this->entries[ $id ] ) ) {
 			return false;
@@ -99,6 +103,7 @@ final class Memory implements Store {
 	/**
 	 * {@inheritDoc}
 	 */
+	#[\Override]
 	public function clean( int $now ): int {
 		$before = count( $this->entries );
 

@@ -50,6 +50,7 @@ final class Table implements Store {
 	/**
 	 * {@inheritDoc}
 	 */
+	#[\Override]
 	public function find( string $hash ): ?Entry {
 		global $wpdb;
 
@@ -62,6 +63,7 @@ final class Table implements Store {
 	/**
 	 * {@inheritDoc}
 	 */
+	#[\Override]
 	public function claim( Entry $entry ): int {
 		global $wpdb;
 
@@ -86,6 +88,7 @@ final class Table implements Store {
 	/**
 	 * {@inheritDoc}
 	 */
+	#[\Override]
 	public function complete( int $id, int $status, string $response ): bool {
 		global $wpdb;
 
@@ -104,6 +107,7 @@ final class Table implements Store {
 	/**
 	 * {@inheritDoc}
 	 */
+	#[\Override]
 	public function release( int $id ): bool {
 		global $wpdb;
 
@@ -114,6 +118,7 @@ final class Table implements Store {
 	/**
 	 * {@inheritDoc}
 	 */
+	#[\Override]
 	public function clean( int $now ): int {
 		global $wpdb;
 

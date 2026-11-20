@@ -34,14 +34,14 @@ final class Errors {
 	 *
 	 * @since 1.0.0
 	 */
-	public const CODES = [ 'unauthorized', 'forbidden', 'not_found', 'invalid_param', 'conflict', 'rate_limited', 'failed' ];
+	public const array CODES = [ 'unauthorized', 'forbidden', 'not_found', 'invalid_param', 'conflict', 'rate_limited', 'failed' ];
 
 	/**
 	 * The codes an error already under is passed on as it is.
 	 *
 	 * @since 1.0.0
 	 */
-	private const PASSED_ON = [ 'not_found', 'forbidden', 'invalid_param', 'conflict', 'rate_limited', 'unauthorized' ];
+	private const array PASSED_ON = [ 'not_found', 'forbidden', 'invalid_param', 'conflict', 'rate_limited', 'unauthorized' ];
 
 	/**
 	 * An error from the function that did the work, under one of the API's codes.
